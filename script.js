@@ -14,9 +14,11 @@ navigator.mediaDevices.getUserMedia(constraints)
     rec.stop();
     createAudioController(rec);
     createDownloadLink(rec);
+    alert('rec', rec)
     }, 10000);
 })
 .catch((err) => {
+    alert('err', err)
     console.log('err', err)
 })
 
