@@ -14,12 +14,28 @@ const constraints = window.constraints = {
 };
 
 function handleSuccess(stream) {
+    console.log('stream', stream)
   const video = document.querySelector('video');
   const videoTracks = stream.getVideoTracks();
+  const audioTracks = stream.getAudioTracks();
   console.log('Got stream with constraints:', constraints);
   console.log(`Using video device: ${videoTracks[0].label}`);
   window.stream = stream; // make variable available to browser console
   video.srcObject = stream;
+
+  const audioContext = new AudioContext;
+  const audioInput = audioContext.createMediaStreamSource(stream)
+  console.log('audioInput', audioInput)
+  const rec = new Recorder(audioInput);
+  rec.record()
+
+  setTimeout(function () {
+      console.log('apple')
+    // 然後在 10 秒後結束錄製，並產生個語音控制項與下載連結。
+    rec.stop();
+    createAudioController(rec);
+    createDownloadLink(rec);
+    }, 5000);
 }
 
 function handleError(error) {
@@ -77,24 +93,24 @@ document.querySelector('#showVideo').addEventListener('click', e => init(e));
 //     console.log('err', err)
 // })
 
-// function createAudioController(rec) {
-//     rec && rec.exportWAV((blob) => {
-//         const url = URL.createObjectURL(blob);
-//         const audio = document.createElement('audio');
-//         audio.controls = true;
-//         audio.src = url;
+function createAudioController(rec) {
+    rec && rec.exportWAV((blob) => {
+        const url = URL.createObjectURL(blob);
+        const audio = document.createElement('audio');
+        audio.controls = true;
+        audio.src = url;
 
-//         main.appendChild(audio);
-//     });
-// }
+        root.appendChild(audio);
+    });
+}
 
-// function createAudioController(rec) {
-//     rec && rec.exportWAV((blob) => {
-//         const url = URL.createObjectURL(blob);
-//         const audio = document.createElement('audio');
-//         audio.controls = true;
-//         audio.src = url;
+function createAudioController(rec) {
+    rec && rec.exportWAV((blob) => {
+        const url = URL.createObjectURL(blob);
+        const audio = document.createElement('audio');
+        audio.controls = true;
+        audio.src = url;
 
-//         main.appendChild(audio);
-//     });
-// }
+        root.appendChild(audio);
+    });
+}
