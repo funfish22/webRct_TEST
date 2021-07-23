@@ -16,8 +16,11 @@ let final = null;
 let cameraString = '';
 navigator.mediaDevices.enumerateDevices().then(function (devices) {
     var arrayLength = devices.length;
-    for (var i = 0; i < arrayLength; i++) // console.log('devices', devices)
-    {
+    for (
+        var i = 0;
+        i < arrayLength;
+        i++ // console.log('devices', devices)
+    ) {
         var tempDevice = devices[i];
         //FOR EACH DEVICE, PUSH TO DEVICES LIST THOSE OF KIND VIDEOINPUT (cameras)
         //AND IF THE CAMERA HAS THE RIGHT FACEMODE ASSING IT TO "final"
@@ -192,3 +195,30 @@ function createAudioController(rec) {
 // function changeCamera(exact) {
 //     constraints = {...constraints, facingMode: { exact }}
 // }
+
+var socket = io('http://localhost:5050');
+const reward = document.getElementById('reward');
+const rewardName = document.getElementById('rewardName');
+const rewardList = document.getElementById('rewardList');
+// 發送一個 "sendMessage" 事件
+socket.emit('sendMessage', {
+    name: 'majer',
+    message: 'hello everyone',
+});
+// 監聽來自 server 的 "allMessage" 事件
+socket.on('allMessage', function (message) {
+    let dom = document.createElement('p');
+    dom.textContent = `${message.name}${message.message}`;
+    rewardList.appendChild(dom);
+    setTimeout(() => {
+        rewardList.removeChild(dom);
+    }, 5000);
+});
+
+const handelReward = () => {
+    socket.emit('sendMessage', {
+        name: rewardName.value,
+        message: '打賞',
+    });
+};
+reward.addEventListener('click', handelReward);

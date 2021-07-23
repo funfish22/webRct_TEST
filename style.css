@@ -149,3 +149,10 @@ table {
     position: fixed;
     top: 0;
 }
+#rewardList {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    padding: 20px;
+    background: #fff;
+}
