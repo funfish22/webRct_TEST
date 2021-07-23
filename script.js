@@ -41,10 +41,9 @@ navigator.mediaDevices.enumerateDevices()
             cameraString += `<option value=${row.deviceId}>${row.label}</option>`
         })
         selectCamera.innerHTML = cameraString
-        console.log('totalCameras', totalCameras)
-        if(totalCameras.length < 2 ) {
+        if(totalCameras < 2) {
             constraints = {
-                audio: true, 
+                audio: false, 
                 video: {
                     deviceId: {exact: final.deviceId}
                     }
@@ -52,15 +51,27 @@ navigator.mediaDevices.enumerateDevices()
         } else {
             selectCamera.addEventListener('change', function(e) {
                 constraints = {
-                    audio: true, 
+                    audio: false,
                     video: {
                         deviceId: {exact: e.target.value}
                         }
                     };
             })
-            
         }
     })
+
+// selectCamera.addEventListener('change', function(e) {
+//     if(DEVICES.length > 2 ) {
+//         constraints = {
+//             audio: false,
+//             video: {
+//                 deviceId: {exact: e.target.value}
+//                 }
+//             };
+//     }
+// })
+
+
 
 function handleSuccess(stream) {
     console.log('stream', stream)
