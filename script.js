@@ -8,7 +8,7 @@
 'use strict';
 
 // Put variables in global scope to make them available to the browser console.
-const constraints = window.constraints = {
+let constraints = window.constraints = {
     audio: true,
     video: true,
     facingMode: { exact: "environment" }
@@ -112,4 +112,14 @@ function createAudioController(rec) {
 
         root.appendChild(audio);
     });
+}
+
+
+const frontBtn = document.getElementById('front');
+const backBtn = document.getElementById('back');
+frontBtn.addEventListener('click', () => changeCamera("user"))
+backBtn.addEventListener('click', () => changeCamera("environment"))
+
+function changeCamera(exact) {
+    constraints = {...constraints, facingMode: { exact }}
 }
