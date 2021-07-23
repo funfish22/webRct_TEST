@@ -8,11 +8,59 @@
 'use strict';
 
 // Put variables in global scope to make them available to the browser console.
-let constraints = window.constraints = {
-    audio: true,
-    video: true,
-    facingMode: { exact: "environment" }
-};
+const selectCamera = document.getElementById('selectCamera')
+
+let constraints = null
+let DEVICES = [];
+let final = null;
+let cameraString = "";
+navigator.mediaDevices.enumerateDevices()
+    .then(function(devices) {
+        var arrayLength = devices.length;
+        for (var i = 0; i < arrayLength; i++)
+        // console.log('devices', devices)
+        {
+            var tempDevice = devices[i];
+            //FOR EACH DEVICE, PUSH TO DEVICES LIST THOSE OF KIND VIDEOINPUT (cameras)
+            //AND IF THE CAMERA HAS THE RIGHT FACEMODE ASSING IT TO "final"
+            if (tempDevice.kind == "videoinput")
+            {
+                DEVICES.push(tempDevice);
+                if(tempDevice.facingMode == "environment" ||tempDevice.label.indexOf("facing back")>=0 )
+                    {final = tempDevice;}
+            }
+        }
+        var totalCameras = DEVICES.length;
+        if(final == null)
+        {
+            //console.log("no suitable camera, getting the last one");
+            final = DEVICES[totalCameras-1];
+        };
+        console.log('DEVICES', DEVICES)
+        DEVICES.forEach(function(row) {
+            cameraString += `<option value=${row.deviceId}>${row.label}</option>`
+        })
+        selectCamera.innerHTML = cameraString
+        console.log('totalCameras', totalCameras)
+        if(totalCameras.length < 2 ) {
+            constraints = {
+                audio: true, 
+                video: {
+                    deviceId: {exact: final.deviceId}
+                    }
+                };
+        } else {
+            selectCamera.addEventListener('change', function(e) {
+                constraints = {
+                    audio: true, 
+                    video: {
+                        deviceId: {exact: e.target.value}
+                        }
+                    };
+            })
+            
+        }
+    })
 
 function handleSuccess(stream) {
     console.log('stream', stream)
@@ -115,11 +163,11 @@ function createAudioController(rec) {
 }
 
 
-const frontBtn = document.getElementById('front');
-const backBtn = document.getElementById('back');
-frontBtn.addEventListener('click', () => changeCamera("user"))
-backBtn.addEventListener('click', () => changeCamera("environment"))
+// const frontBtn = document.getElementById('front');
+// const backBtn = document.getElementById('back');
+// frontBtn.addEventListener('click', () => changeCamera("user"))
+// backBtn.addEventListener('click', () => changeCamera("environment"))
 
-function changeCamera(exact) {
-    constraints = {...constraints, facingMode: { exact }}
-}
+// function changeCamera(exact) {
+//     constraints = {...constraints, facingMode: { exact }}
+// }

@@ -10,8 +10,15 @@
     <div id="main">
         <video id="gum-local" autoplay playsinline></video>
         <button id="showVideo">Open camera</button>
-        <button id="front">前鏡頭</button>
-        <button id="back">後鏡頭</button>
+        <!-- <button id="front">前鏡頭</button>
+        <button id="back">後鏡頭</button> -->
+        <label>
+            <select name="selectCamera" id="selectCamera" class="selectCamera">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+        </label>
         <div id="root"></div>
         <div id="errorMsg"></div>
         <div id="videoTracks"></div>
