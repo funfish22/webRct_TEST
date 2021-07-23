@@ -26,38 +26,33 @@ navigator.mediaDevices.enumerateDevices()
             if (tempDevice.kind == "videoinput")
             {
                 DEVICES.push(tempDevice);
-                if(tempDevice.facingMode == "environment" ||tempDevice.label.indexOf("facing back")>=0 )
+                if(tempDevice.facingMode == "environment" || tempDevice.label.indexOf("facing back")>=0 )
                     {final = tempDevice;}
             }
         }
-        var totalCameras = DEVICES.length;
         if(final == null)
         {
-            //console.log("no suitable camera, getting the last one");
-            final = DEVICES[totalCameras-1];
+            final = DEVICES[0];
         };
         console.log('DEVICES', DEVICES)
         DEVICES.forEach(function(row) {
             cameraString += `<option value=${row.deviceId}>${row.label}</option>`
         })
         selectCamera.innerHTML = cameraString
-        if(totalCameras < 2) {
+        constraints = {
+            audio: false, 
+            video: {
+                deviceId: {exact: final.deviceId}
+                },
+            };
+        selectCamera.addEventListener('change', function(e) {
             constraints = {
-                audio: false, 
+                audio: false,
                 video: {
-                    deviceId: {exact: final.deviceId}
+                    deviceId: {exact: e.target.value}
                     }
                 };
-        } else {
-            selectCamera.addEventListener('change', function(e) {
-                constraints = {
-                    audio: false,
-                    video: {
-                        deviceId: {exact: e.target.value}
-                        }
-                    };
-            })
-        }
+        })
     })
 
 // selectCamera.addEventListener('change', function(e) {
