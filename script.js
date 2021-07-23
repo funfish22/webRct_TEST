@@ -25,6 +25,7 @@ navigator.mediaDevices.enumerateDevices()
             //AND IF THE CAMERA HAS THE RIGHT FACEMODE ASSING IT TO "final"
             if (tempDevice.kind == "videoinput")
             {
+                console.log('tempDevice', tempDevice)
                 DEVICES.push(tempDevice);
                 if(tempDevice.facingMode == "environment" || tempDevice.label.indexOf("facing back")>=0 )
                     {final = tempDevice;}
@@ -65,17 +66,32 @@ navigator.mediaDevices.enumerateDevices()
 //             };
 //     }
 // })
-
+selectCamera.addEventListener('change', async function(e) {
+    constraints = {
+        audio: false,
+        video: {
+            deviceId: {exact: e.target.value}
+            }
+        };
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    const video = document.getElementById('gum-local');
+    const video2 = document.getElementById('gum-local2');
+    video2.srcObject = stream;
+    if(video2.srcObject !== "") {
+        video.classList.add('fix')
+    }
+})
 
 
 function handleSuccess(stream) {
     console.log('stream', stream)
-    const video = document.querySelector('video');
+    const video = document.getElementById('gum-local');
     const videoTracks = stream.getVideoTracks();
     const audioTracks = stream.getAudioTracks();
     console.log('Got stream with constraints:', constraints);
     console.log(`Using video device: ${videoTracks[0].label}`);
     window.stream = stream; // make variable available to browser console
+    console.log('stream', stream)
     video.srcObject = stream;
 
     document.getElementById('videoTracks').textContent = videoTracks[0] !== undefined?  videoTracks[0].kind : '無裝置'
